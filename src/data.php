@@ -1,6 +1,6 @@
 <?php
 
-function getDataToTable():array{
+function getData():array{
 
 $strSQL = 'SELECT * from user u';
 
@@ -53,6 +53,28 @@ try{
      //die() - Bricht das Script ab und gibt davor noch die angegebene Meldung aus.
      die();
   }
+}
+
+
+function getTodos(string $path) : array{
+    $lines = [];
+
+    //die Funktion file gibt uns gleich ein großes Array mit den Inhalten(zeilenweise) der CSV-Datei!
+    if (!file_exists($path)) return $lines;
+    $contents = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    //var_dump($contents);
+    
+    //Jede Zeile aufsplitten und in $lines speichern
+    foreach ($contents as $line){
+        $lines[] = explode(";", $line);
+        
+    }
+    
+
+    //prettyPrint($lines, true);
+    //prettyPrint($lines, true);
+    return $lines;
+
 }
 
 ?>
