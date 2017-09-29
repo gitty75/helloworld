@@ -50,17 +50,27 @@ foreach($arrRows As $line){
     echo '<tr>';
     //wenn checkable is true, dann, soll jeder Zeile eine Checkbox vorangestellt werden...
     if($checkable===true){
-        echo "<td><input type=\"checkbox\" name=\"doneYesNo[]\" value=\"done$j\" /></td>";
-    }
-        foreach($line As $column){
-            echo '<td>', $column, '</td>';
+        
+        if(array_key_exists('todo_id', $line)){
+            //dann nimm eben diese 'todo_id'...
+            echo "<td><input type=\"checkbox\" name=\"doneYesNo[]\" value=\"done", $line['todo_id'],"\" /></td>";
+        }else{
+            //die id ergibt sich für die Textdatei aus der Zeilennummer...
+            echo "<td><input type=\"checkbox\" name=\"doneYesNo[]\" value=\"done$j\" /></td>";
         }
+
+    
+    
+    }
+    foreach($line As $column){
+        echo '<td>', $column, '</td>';
+    }
     //Edit-Spalte
-    if(array_key_exists('user_id', $line) === false ){
+    if(array_key_exists('todo_id', $line) === false ){
         $link = 'todo-update.php?tid=' . $j;
     }
     else{
-        $link = 'todo-update.php?tid=' . $line['user_id'];
+        $link = 'todo-update.php?tid=' . $line['todo_id'];
     }
     echo "<td><a href=\"$link\">edit</a></td>";
     echo '</tr>';
@@ -71,5 +81,53 @@ echo '</tbody>';
 echo '</table>';
 
 }
+
+/**
+ * Undocumented function
+ *
+ * @param array $arrToBeDeleted
+ * @return bool
+ */
+function updateCSV(array $arrToBeDeleted):bool{
+   
+       $ToDos = fopen('todoliste.csv', 'r'); //Lesen-Modus
+       $arrPreliminary; //vorläufiges Array mit den zu erhaltenden Einträgen
+   
+       // Bei Dateien immer erst prüfen, ob eine gültige Ressource vorhanden ist.
+       if ($ToDos !== false) {
+               $j = 1;
+               while (feof($ToDos) !== true) {
+                   // die aktuelle Zeile auslesen, den Zeiger auf die nächste Zeile setzen
+                   $line = fgets($ToDos);
+                   if(in_array("done$j", $arrToBeDeleted)){
+
+                   }
+                   else
+                   {
+                       $arrPreliminary[] = $line;
+                   }
+                   $j++;
+
+               }
+       
+   
+       }
+       else
+       {
+          return false; 
+       }
+       fclose($ToDos);
+
+       $ToDos = fopen('todoliste.csv', 'w'); //neu schreiben, wenn nötig nicht existierende Datei für diesen Zweck erzeugen
+       if ($ToDos != false){
+           foreach($arrPreliminary As $value){
+               fwrite($ToDos, $value);  //. "\r\n"    
+           }
+           fclose($ToDos);  
+       }
+   return true;    
+}
+
+
 
 ?>

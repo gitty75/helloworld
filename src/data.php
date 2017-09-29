@@ -2,7 +2,8 @@
 
 function getData():array{
 
-$strSQL = 'SELECT * from user u';
+//$strSQL = 'SELECT * from user u';
+$strSQL = 'SELECT * from TODOS t inner join user u on t.user_id = u.user_id';
 
 $dbuser = 'root';
 $pass = '';
