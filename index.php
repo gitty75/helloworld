@@ -27,27 +27,15 @@ $_SESSION['somedata'] = 'merkdirdas';
 </div>
 <div id="mid" class="pure-u-1 pure-u-md-1-3" >
      
-<?php
-$srctxt = '';
-$srcdbt = '';
-//any prechecks for checkboxes saved in $_SESSION?
-if(array_key_exists('datasource', $_SESSION)){
-    if($_SESSION['datasource']==='srctext'){
-        $srctxt = 'checked';
-        $srcdbt = '';
-    }elseif($_SESSION['datasource']==='srctable'){
-        $srctxt = '';
-        $srcdbt = 'checked';
-    }
-}
-
-?>
-
-    <form class="pure-form pure-form-aligned"  action="" method="post">
-            <label for="sourceDb">Datenbank</label>
-            <input type="checkbox" name="sourcedb" id="sourceDb" <?PHP echo $srcdbt?>>
-            <label for="sourceTx">Textdatei</label>
-            <input type="checkbox" name="sourcetx" id="sourceTx" <?PHP echo $srctxt?>>
+    <form class="pure-form pure-form-aligned"  action="" method="post">   
+            <select name="datasource" class="input">
+            <!-- Alt+Shift+A ist der HTML-Kommentar... disabled option outside of Option group can be uses to display standard-text-->
+                <option disabled="disabled" selected="selected">Datenquelle wählen</option>
+                <optgroup label="Datasource">
+                <option value="sourcedb">Datenbank</option>
+                <option value="sourcetx">Textdatei</option>
+                </optgroup>
+            </select>
             <br><br>
             <input class="inbox" type="text" name="newtodo" id="a"> 
             <br><br> 
@@ -78,26 +66,21 @@ if(array_key_exists('datasource', $_SESSION)){
 
 
                 //Hier wird entschieden, ob eine Textdatei oder die Datenbank als Datenquelle verwendet werden soll...
-                if(isset($_POST['sourcedb'])){
-                    $rows = getData();
-                    $_SESSION['datasource'] = 'srctable';
-                }
-                elseif(isset($_POST['sourcetx'])){
-                    $rows = getTodos('todoliste.csv');
-                    $_SESSION['datasource'] = 'srctext';
-                }
-                if(isset($_POST['sourcedb']) or isset($_POST['sourcetx'])){
-                    renderTable($rows);
-                }
                 
-
-                
-                
-
-                
-                          
+                if(isset($_POST['datasource'])){
+                    if($_POST['datasource']==='sourcedb'){
+                        $rows = getData();
+                        $_SESSION['datasource'] = 'sourcedb';
+                        renderTable($rows);                       
+                    }
+                    elseif($_POST['datasource']==='sourcetx'){
+                        $rows = getTodos('todoliste.csv');
+                        $_SESSION['datasource'] = 'sourcetx';
+                        renderTable($rows);                        
+                    }
+                }                                     
             ?>
-
+            
     </form>     
      
 </div>
